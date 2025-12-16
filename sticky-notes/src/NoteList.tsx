@@ -1,12 +1,20 @@
 import React from 'react';
+import type { Note } from './types';
 
-const NoteList: React.FC = () => {
+interface NoteListProps {
+  notes: Note[];
+}
+
+function NoteList({ notes }: NoteListProps) {
   return (
-    <div>
-      {/* ส่วนประกอบของ Note List */}
-      <h2>Note List Component</h2>
-    </div>
+    <ul>
+      {notes.map((note) => (
+        <li key={note.id}>
+          {note.text}
+        </li>
+      ))}
+    </ul>
   );
-};
+}
 
 export default NoteList;
