@@ -3,21 +3,19 @@ import type { Note } from './types';
 import NoteList from './NoteList';
 import NoteForm from './NoteForm';
 
-
 function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
-
-  useEffect(() => {
+  // 👇 1. Lazy Initialization: อ่านจากเครื่องทันที! (ไม่ต้องใช้ useEffect โหลดแล้ว)
+  const [notes, setNotes] = useState<Note[]>(() => {
     const saved = localStorage.getItem('notes');
     if (saved) {
-      setNotes(JSON.parse(saved) as Note[]);
+      return JSON.parse(saved) as Note[];
     }
-  }, []);
+    return []; // ถ้าไม่มีให้เริ่มเป็นอาเรย์ว่าง
+  });
 
+  // 👇 2. Save: ยังคงเซฟทุกครั้งที่ notes เปลี่ยนเหมือนเดิม
   useEffect(() => {
-    if (notes.length > 0) {
-      localStorage.setItem('notes', JSON.stringify(notes));
-    }
+    localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
   const addNote = (text: string) => {
@@ -29,14 +27,12 @@ function App() {
   };
 
   const deleteNote = (id: string) => {
-    const updatedNotes = notes.filter((note) => note.id !== id);
-    setNotes(updatedNotes);
-    localStorage.setItem('notes', JSON.stringify(updatedNotes)); // อัปเดต Save ทันที
+    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Sticky Notes App</h1>
+    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+      <h1>Sticky Notes (Challenge)</h1>
       <NoteForm onAdd={addNote} />
       <NoteList notes={notes} onDelete={deleteNote} />
     </div>

@@ -1,32 +1,37 @@
 import { useState } from 'react';
 
-// 👇 1. สร้าง Interface สำหรับ Props (ตามโจทย์)
 interface NoteFormProps {
   onAdd: (text: string) => void;
 }
 
-// 👇 2. รับ Props เข้ามาและระบุ Type เป็น NoteFormProps
 function NoteForm({ onAdd }: NoteFormProps) {
   const [text, setText] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => { // 👈 ระบุ Type ของ Event
+  // 👇 1. แยกฟังก์ชันออกมา เพื่อระบุ Type ให้ชัดเจนตามโจทย์ (Strict Event Typing)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (text.trim()) {
-      onAdd(text);
-      setText('');
+    // 👇 2. เช็คว่ามีข้อความจริงไหม (ห้ามส่งค่าว่าง)
+    if (text.trim().length === 0) {
+      return; 
     }
+    onAdd(text);
+    setText('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
       <input
         type="text"
         placeholder="Enter note..."
         value={text}
-        onChange={(e) => setText(e.target.value)}
-        style={{ marginRight: '10px' }}
+        onChange={handleChange} // 👈 เรียกใช้ฟังก์ชันที่ประกาศไว้
+        style={{ marginRight: '10px', padding: '5px' }}
       />
-      <button type="submit">Add Note</button>
+      <button type="submit" style={{ padding: '5px 10px' }}>Add Note</button>
     </form>
   );
 }
