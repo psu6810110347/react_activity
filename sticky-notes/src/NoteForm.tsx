@@ -1,31 +1,30 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-// 1. กำหนด Interface สำหรับ Props
+// 👇 1. สร้าง Interface สำหรับ Props (ตามโจทย์)
 interface NoteFormProps {
   onAdd: (text: string) => void;
 }
 
-// 2. รับ Props เข้ามาโดยระบุ Type เป็น NoteFormProps
+// 👇 2. รับ Props เข้ามาและระบุ Type เป็น NoteFormProps
 function NoteForm({ onAdd }: NoteFormProps) {
   const [text, setText] = useState('');
 
-  // 3. จัดการ onSubmit โดยระบุ Event Type คือ React.FormEvent
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // ป้องกันหน้าเว็บรีโหลด
-    
-    if (text.trim().length === 0) return; // กันไม่ให้ส่งค่าว่าง
-
-    onAdd(text);
-    setText(''); // เคลียร์ช่องกรอกหลังจากกดปุ่ม
+  const handleSubmit = (e: React.FormEvent) => { // 👈 ระบุ Type ของ Event
+    e.preventDefault();
+    if (text.trim()) {
+      onAdd(text);
+      setText('');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="เขียนโน้ตใหม่..."
+        placeholder="Enter note..."
         value={text}
         onChange={(e) => setText(e.target.value)}
+        style={{ marginRight: '10px' }}
       />
       <button type="submit">Add Note</button>
     </form>
