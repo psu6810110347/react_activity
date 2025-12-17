@@ -1,17 +1,32 @@
-import type { Note } from './types'; // อย่าลืม import type Note
+import type { Note } from './types';
 
-// 👇 1. สร้าง Interface สำหรับ Props (ตามโจทย์)
+// 👇 ประกาศ Interface แค่รอบเดียวพอครับ (และต้องมี onDelete)
 interface NoteListProps {
   notes: Note[];
+  onDelete: (id: string) => void;
 }
 
-// 👇 2. รับ Props เข้ามาและระบุ Type เป็น NoteListProps
-function NoteList({ notes }: NoteListProps) {
+function NoteList({ notes, onDelete }: NoteListProps) {
   return (
     <ul>
       {notes.map((note) => (
-        <li key={note.id} style={{ margin: '5px 0' }}>
-          {note.text}
+        <li key={note.id} style={{ margin: '10px 0', display: 'flex', alignItems: 'center' }}>
+          <span style={{ marginRight: '10px' }}>{note.text}</span>
+          
+          {/* 👇 ปุ่มลบ */}
+          <button 
+            onClick={() => onDelete(note.id)}
+            style={{ 
+              backgroundColor: '#ff4444', 
+              color: 'white', 
+              border: 'none', 
+              padding: '5px 10px', 
+              cursor: 'pointer',
+              borderRadius: '4px'
+            }}
+          >
+            Delete
+          </button>
         </li>
       ))}
     </ul>
